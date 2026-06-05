@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GlyphForge</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <h2>GlyphForge</h2>
+
+    <div>
+
+        {% if logged_in %}
+
+            <span>{{ logged_in }}</span>
+
+            <a href="/logout">Logout</a>
+
+        {% else %}
+
+            <a href="/login">Login</a>
+
+            <a href="/signup">Sign Up</a>
+
+        {% endif %}
+
+    </div>
+
+</nav>
+
+<main>
+
+    <h1>GlyphForge</h1>
+
+    <form method="POST">
+
+        <input
+            type="text"
+            name="text"
+            placeholder="Enter text">
+
+        <button type="submit">
+            Generate
+        </button>
+
+    </form>
+
+    {% if svg_output %}
+
+        <div class="svg-box">
+
+            {{ svg_output | safe }}
+
+        </div>
+
+    {% endif %}
+
+</main>
+
+</body>
+</html>
