@@ -1,0 +1,375 @@
+```css
+/* ─────────────────────────────
+   PAGE LAYOUT
+───────────────────────────── */
+
+body {
+
+    background:
+        radial-gradient(circle at top left,
+            rgba(120, 20, 20, 0.28),
+            transparent 35%),
+
+        radial-gradient(circle at bottom right,
+            rgba(255, 120, 80, 0.08),
+            transparent 30%),
+
+        #140404;
+
+    overflow-x: hidden;
+}
+
+
+/* ─────────────────────────────
+   ASCII CORNER
+───────────────────────────── */
+
+.ascii-corner {
+
+    position: absolute;
+
+    top: 26px;
+    left: 28px;
+
+    color: rgba(255, 220, 200, 0.35);
+
+    font-size: 0.72rem;
+
+    line-height: 1.4;
+
+    letter-spacing: 2px;
+
+    pointer-events: none;
+}
+
+
+/* ─────────────────────────────
+   STATUS PANEL
+───────────────────────────── */
+
+.status-panel {
+
+    position: absolute;
+
+    top: 28px;
+    right: 30px;
+
+    border: 1px solid rgba(255, 180, 140, 0.15);
+
+    padding: 10px 16px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+
+    font-size: 0.72rem;
+
+    color: rgba(255, 220, 200, 0.45);
+
+    letter-spacing: 1px;
+}
+
+
+/* ─────────────────────────────
+   HERO SECTION
+───────────────────────────── */
+
+.hero-shell {
+
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    margin-top: 140px;
+}
+
+
+/* SMALL BADGE */
+
+.hero-badge {
+
+    border: 1px solid rgba(255, 180, 140, 0.18);
+
+    padding: 12px 22px;
+
+    font-size: 0.72rem;
+
+    letter-spacing: 4px;
+
+    color: rgba(255, 220, 200, 0.75);
+
+    margin-bottom: 38px;
+}
+
+
+/* MAIN LOGO */
+
+.hero-logo {
+
+    font-family: var(--serif);
+
+    font-size: 6.4rem;
+
+    font-weight: 400;
+
+    letter-spacing: -4px;
+
+    line-height: 0.9;
+
+    margin: 0;
+
+    color: var(--text-main);
+}
+
+
+.hero-logo span {
+
+    color: var(--accent);
+
+    font-style: italic;
+
+    font-weight: 300;
+}
+
+
+/* SUBTITLE */
+
+.hero-sub {
+
+    margin-top: 10px;
+
+    color: rgba(255, 220, 200, 0.55);
+
+    letter-spacing: 5px;
+
+    font-size: 0.85rem;
+
+    text-transform: lowercase;
+}
+
+
+/* ─────────────────────────────
+   GENERATOR
+───────────────────────────── */
+
+.generator-shell {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 60px;
+}
+
+
+.generator-box {
+
+    width: 540px;
+}
+
+
+/* INPUT */
+
+.gen-input-row input {
+
+    width: 100%;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255, 180, 140, 0.14);
+
+    padding: 18px;
+
+    color: var(--text-main);
+
+    font-family: var(--mono);
+
+    font-size: 0.9rem;
+
+    letter-spacing: 2px;
+
+    outline: none;
+
+    transition: 0.25s ease;
+}
+
+
+.gen-input-row input:focus {
+
+    border-color: rgba(255, 180, 140, 0.35);
+
+    box-shadow:
+        0 0 40px rgba(120, 20, 20, 0.25);
+}
+
+
+.gen-input-row input::placeholder {
+
+    color: rgba(255,255,255,0.25);
+}
+
+
+/* CONTROLS */
+
+.gen-controls {
+
+    margin-top: 18px;
+
+    display: flex;
+
+    gap: 14px;
+}
+
+
+/* SELECT */
+
+.gen-controls select {
+
+    flex: 1;
+
+    background: rgba(255,255,255,0.04);
+
+    border: 1px solid rgba(255, 180, 140, 0.14);
+
+    color: var(--text-main);
+
+    padding: 16px;
+
+    font-family: var(--mono);
+
+    letter-spacing: 2px;
+
+    outline: none;
+}
+
+
+/* BUTTON */
+
+.gen-controls button {
+
+    background: transparent;
+
+    border: 1px solid rgba(255, 180, 140, 0.18);
+
+    color: var(--text-main);
+
+    padding: 16px 26px;
+
+    font-family: var(--mono);
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+    cursor: pointer;
+
+    transition: 0.25s ease;
+}
+
+
+.gen-controls button:hover {
+
+    border-color: rgba(255, 180, 140, 0.45);
+
+    color: var(--accent-soft);
+
+    box-shadow:
+        0 0 30px rgba(120, 20, 20, 0.25);
+}
+
+
+/* ─────────────────────────────
+   PREVIEW
+───────────────────────────── */
+
+.preview-shell {
+
+    width: 100%;
+
+    display: flex;
+
+    justify-content: center;
+
+    margin-top: 60px;
+
+    padding-bottom: 100px;
+}
+
+
+#glyph-preview {
+
+    width: 900px;
+
+    min-height: 280px;
+
+    border: 1px solid rgba(255, 180, 140, 0.10);
+
+    background: rgba(255,255,255,0.02);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+}
+
+
+/* PLACEHOLDER */
+
+.preview-placeholder {
+
+    color: rgba(255,255,255,0.25);
+
+    font-size: 0.82rem;
+
+    letter-spacing: 2px;
+}
+
+
+/* SVG */
+
+#glyph-preview svg {
+
+    width: 100%;
+
+    height: auto;
+
+    display: block;
+}
+
+
+/* ─────────────────────────────
+   RESPONSIVE
+───────────────────────────── */
+
+@media (max-width: 768px) {
+
+    .hero-logo {
+
+        font-size: 4rem;
+    }
+
+    .generator-box {
+
+        width: 90%;
+    }
+
+    #glyph-preview {
+
+        width: 92%;
+    }
+
+    .gen-controls {
+
+        flex-direction: column;
+    }
+}
+```

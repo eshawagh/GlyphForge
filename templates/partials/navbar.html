@@ -1,0 +1,33 @@
+<nav class="navbar">
+
+    <div class="logo">
+        GlyphForge
+    </div>
+
+    <div class="nav-links">
+
+        {% if logged_in %}
+
+            <span>
+                [ {{ logged_in }} ]
+            </span>
+
+            <a href="{{ url_for('logout') }}">
+                logout
+            </a>
+
+        {% else %}
+
+            <a href="{{ url_for('login') }}">
+                login
+            </a>
+
+            <a href="{{ url_for('signup') }}">
+                signup
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</nav>

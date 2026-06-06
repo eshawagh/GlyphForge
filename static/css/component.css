@@ -1,0 +1,52 @@
+.navbar{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:28px 48px;
+}
+
+.logo{
+
+    font-size:2rem;
+
+    color:var(--paper);
+}
+
+.nav-links{
+
+    display:flex;
+
+    gap:24px;
+}
+
+.nav-links a{
+
+    color:var(--paper);
+
+    text-decoration:none;
+
+    opacity:0.8;
+
+    transition:0.3s;
+}
+
+.nav-links a:hover{
+
+    opacity:1;
+}
+
+button{
+
+    cursor:pointer;
+
+    transition:0.3s;
+}
+
+button:hover{
+
+    transform:translateY(-2px);
+}

@@ -1,67 +1,135 @@
-<!DOCTYPE html>
-<html>
+```html
+{% extends "base.html" %}
 
-<head>
-    <title>GlyphForge</title>
+{% block title %}GlyphForge{% endblock %}
 
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/index.css') }}">
+{% endblock %}
 
-<body>
+{% block content %}
 
-<nav class="navbar">
+<!-- ASCII CORNER -->
+<pre class="ascii-corner">
+┌────────────┐
+│ G L Y P H  │
+│ F O R G E  │
+└────────────┘
+</pre>
 
-    <h2>GlyphForge</h2>
+<!-- STATUS PANEL -->
+<div class="status-panel">
+    <span>v1.0.0</span>
+    <span>◈ online</span>
+</div>
 
-    <div>
+<!-- HERO SECTION -->
+<section class="hero-shell">
 
-        {% if logged_in %}
-
-            <span>{{ logged_in }}</span>
-
-            <a href="/logout">Logout</a>
-
-        {% else %}
-
-            <a href="/login">Login</a>
-
-            <a href="/signup">Sign Up</a>
-
-        {% endif %}
-
+    <div class="hero-badge">
+        ◆ SVG TYPOGRAPHY ENGINE
     </div>
 
-</nav>
+    <h1 class="hero-logo">
+        Glyph<span>Forge</span>
+    </h1>
 
-<main>
+    <p class="hero-sub">
+        warm ascii text studio
+    </p>
 
-    <h1>GlyphForge</h1>
+</section>
 
-    <form method="POST">
+<!-- GENERATOR -->
+<section class="generator-shell">
 
-        <input
-            type="text"
-            name="text"
-            placeholder="Enter text">
+    <div class="generator-box">
 
-        <button type="submit">
-            Generate
-        </button>
+        <!-- INPUT -->
+        <div class="gen-input-row">
 
-    </form>
-
-    {% if svg_output %}
-
-        <div class="svg-box">
-
-            {{ svg_output | safe }}
+            <input
+                type="text"
+                id="text-input"
+                placeholder="TYPE SOMETHING BEAUTIFUL..."
+                maxlength="40"
+                oninput="livePreview()"
+            >
 
         </div>
 
-    {% endif %}
+        <!-- CONTROLS -->
+        <div class="gen-controls">
 
-</main>
+            <select id="font-select" onchange="livePreview()">
 
-</body>
-</html>
+                <option value="georgia">Georgia</option>
+                <option value="garamond">Garamond</option>
+                <option value="cursive">Cursive</option>
+                <option value="mono">Monospace</option>
+
+            </select>
+
+            <button onclick="livePreview()">
+                Generate
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- SVG PREVIEW -->
+<section class="preview-shell">
+
+    <div id="glyph-preview">
+
+        <div class="preview-placeholder">
+
+            <p>
+                Your generated SVG appears here.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- LIVE PREVIEW SCRIPT -->
+<script>
+
+async function livePreview() {
+
+    const text = document.getElementById("text-input").value
+
+    const font = document.getElementById("font-select").value
+
+    const formData = new FormData()
+
+    formData.append("text", text)
+    formData.append("font", font)
+
+    try {
+
+        const response = await fetch("/generate", {
+            method: "POST",
+            body: formData
+        })
+
+        const data = await response.json()
+
+        document.getElementById("glyph-preview").innerHTML = data.svg
+
+    } catch (error) {
+
+        console.error("SVG generation failed:", error)
+
+    }
+}
+
+</script>
+
+{% endblock %}
+```
