@@ -1,127 +1,265 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    redirect,
+    session,
+    jsonify,
+    make_response
+)
+
+from werkzeug.security import (
+    generate_password_hash,
+    check_password_hash
+)
+
+import shelve
+
+from datetime import datetime
+
 from svg_engine import generate_svg
+
 
 app = Flask(__name__)
 
-app.secret_key = "glyphforge-secret-key"
-
-# temporary in-memory users
-users = {}
+app.secret_key = "glyphforge_secret_key"
 
 
-# ─────────────────────────────────────────────
+# =====================================================
+# USER DATABASE
+# =====================================================
+
+def create_user(username, password):
+
+    with shelve.open("users_db") as db:
+
+        if username in db:
+            return False
+
+        db[username] = {
+            "password": generate_password_hash(password),
+            "glyphs": []
+        }
+
+    return True
+
+
+def validate_user(username, password):
+
+    with shelve.open("users_db") as db:
+
+        if username not in db:
+            return False
+
+        stored_hash = db[username]["password"]
+
+        return check_password_hash(
+            stored_hash,
+            password
+        )
+
+
+# =====================================================
+# SAVE GLYPHS
+# =====================================================
+
+def save_glyph(username, text, font):
+
+    svg = generate_svg(text, font)
+
+    glyph_data = {
+        "text": text,
+        "font": font,
+        "svg": svg,
+        "created": datetime.now().strftime("%d %b %Y %H:%M")
+    }
+
+    with shelve.open("users_db", writeback=True) as db:
+
+        db[username]["glyphs"].append(glyph_data)
+
+
+def get_user_glyphs(username):
+
+    with shelve.open("users_db") as db:
+
+        if username in db:
+            return db[username]["glyphs"]
+
+    return []
+
+
+# =====================================================
 # HOME
-# ─────────────────────────────────────────────
-@app.route("/", methods=["GET"])
+# =====================================================
+
+@app.route("/")
 def home():
 
-    # protect route
-    if not session.get("user"):
-        return redirect(url_for("login"))
+    if "user" not in session:
+        return redirect("/login")
+
+    glyphs = get_user_glyphs(session["user"])
 
     return render_template(
         "index.html",
-        logged_in=session.get("user")
+        glyphs=glyphs
     )
 
 
-# ─────────────────────────────────────────────
-# LIVE SVG GENERATOR ROUTE
-# ─────────────────────────────────────────────
-@app.route("/generate", methods=["POST"])
-def generate():
-
-    text = request.form.get("text", "")
-    font = request.form.get("font", "georgia")
-
-    svg_output = generate_svg(text, font)
-
-    return jsonify({
-        "svg": svg_output
-    })
-
-
-# ─────────────────────────────────────────────
-# LOGIN
-# ─────────────────────────────────────────────
-@app.route("/login", methods=["GET", "POST"])
-def login():
-
-    if session.get("user"):
-        return redirect(url_for("home"))
-
-    error = None
-
-    if request.method == "POST":
-
-        username = request.form.get("username")
-        password = request.form.get("password")
-
-        user = users.get(username)
-
-        if not user:
-            error = "User not found"
-
-        elif user["password"] != password:
-            error = "Incorrect password"
-
-        else:
-            session["user"] = username
-            return redirect(url_for("home"))
-
-    return render_template("login.html", error=error)
-
-
-# ─────────────────────────────────────────────
+# =====================================================
 # SIGNUP
-# ─────────────────────────────────────────────
+# =====================================================
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
 
-    if session.get("user"):
-        return redirect(url_for("home"))
+    error = None
+
+    if request.method == "POST":
+
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username or not password:
+            error = "All fields required."
+
+        else:
+
+            success = create_user(
+                username,
+                password
+            )
+
+            if success:
+
+                session["user"] = username
+
+                return redirect("/")
+
+            else:
+                error = "Username already exists."
+
+    return render_template(
+        "signup.html",
+        error=error
+    )
+
+
+# =====================================================
+# LOGIN
+# =====================================================
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
 
     error = None
 
     if request.method == "POST":
 
         username = request.form.get("username")
-        email = request.form.get("email")
         password = request.form.get("password")
-        confirm = request.form.get("confirm")
 
-        if username in users:
-            error = "Username already exists"
+        valid = validate_user(
+            username,
+            password
+        )
 
-        elif password != confirm:
-            error = "Passwords do not match"
-
-        else:
-            users[username] = {
-                "email": email,
-                "password": password
-            }
+        if valid:
 
             session["user"] = username
 
-            return redirect(url_for("home"))
+            return redirect("/")
 
-    return render_template("signup.html", error=error)
+        else:
+            error = "Invalid credentials."
+
+    return render_template(
+        "login.html",
+        error=error
+    )
 
 
-# ─────────────────────────────────────────────
+# =====================================================
 # LOGOUT
-# ─────────────────────────────────────────────
+# =====================================================
+
 @app.route("/logout")
 def logout():
 
     session.pop("user", None)
 
-    return redirect(url_for("login"))
+    return redirect("/login")
 
 
-# ─────────────────────────────────────────────
+# =====================================================
+# GENERATE SVG
+# =====================================================
+
+@app.route("/generate", methods=["POST"])
+def generate():
+
+    if "user" not in session:
+
+        return jsonify({
+            "error": "Unauthorized"
+        }), 401
+
+    text = request.form.get("text", "")
+    font = request.form.get("font", "Georgia")
+
+    svg = generate_svg(
+        text,
+        font
+    )
+
+    save_glyph(
+        session["user"],
+        text,
+        font
+    )
+
+    return jsonify({
+        "svg": svg
+    })
+
+
+# =====================================================
+# DOWNLOAD SVG
+# =====================================================
+
+@app.route("/download", methods=["POST"])
+def download():
+
+    text = request.form.get(
+        "text",
+        "GlyphForge"
+    )
+
+    font = request.form.get(
+        "font",
+        "Georgia"
+    )
+
+    svg = generate_svg(
+        text,
+        font
+    )
+
+    response = make_response(svg)
+
+    response.headers["Content-Type"] = "image/svg+xml"
+
+    response.headers["Content-Disposition"] = (
+        "attachment; filename=glyphforge.svg"
+    )
+
+    return response
+
+
+# =====================================================
 # RUN
-# ─────────────────────────────────────────────
+# =====================================================
+
 if __name__ == "__main__":
     app.run(debug=True)

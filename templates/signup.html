@@ -1,43 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Sign Up — GlyphForge{% endblock %}
-
-{% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/pages/auth.css') }}">
-{% endblock %}
+{% block title %}Signup{% endblock %}
 
 {% block content %}
 
-<section class="auth-layout">
-
-    <div class="auth-left">
-
-<pre class="ascii-art">
-     .----------------.
-    / .--------------. \
-   | |   GLYPHFORGE  | |
-   | |   CREATE ID   | |
-    \ '--------------' /
-     '----------------'
-</pre>
-
-        <h1>Create Account</h1>
-
-        <p>
-            Join the warm typography studio.
-        </p>
-
-    </div>
+<section class="auth-page">
 
     <div class="auth-card">
 
-        <h2>Sign Up</h2>
+        <h1>Create Account</h1>
 
-        {% if error %}
-        <div class="error-box">
-            {{ error }}
-        </div>
-        {% endif %}
+        <p>Join GlyphForge.</p>
 
         <form method="POST">
 
@@ -49,23 +22,9 @@
             >
 
             <input
-                type="email"
-                name="email"
-                placeholder="Email"
-                required
-            >
-
-            <input
                 type="password"
                 name="password"
                 placeholder="Password"
-                required
-            >
-
-            <input
-                type="password"
-                name="confirm"
-                placeholder="Confirm Password"
                 required
             >
 
@@ -75,10 +34,15 @@
 
         </form>
 
-        <p class="auth-link">
+        {% if error %}
+
+            <p>{{ error }}</p>
+
+        {% endif %}
+
+        <a href="/login">
             Already have an account?
-            <a href="{{ url_for('login') }}">Login</a>
-        </p>
+        </a>
 
     </div>
 

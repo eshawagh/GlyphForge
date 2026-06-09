@@ -1,4 +1,3 @@
-```html
 {% extends "base.html" %}
 
 {% block title %}GlyphForge{% endblock %}
@@ -9,95 +8,91 @@
 
 {% block content %}
 
-<!-- ASCII CORNER -->
-<pre class="ascii-corner">
-┌────────────┐
-│ G L Y P H  │
-│ F O R G E  │
-└────────────┘
-</pre>
-
-<!-- STATUS PANEL -->
-<div class="status-panel">
-    <span>v1.0.0</span>
-    <span>◈ online</span>
-</div>
-
-<!-- HERO SECTION -->
-<section class="hero-shell">
-
-    <div class="hero-badge">
-        ◆ SVG TYPOGRAPHY ENGINE
-    </div>
+<section class="hero-section">
 
     <h1 class="hero-logo">
         Glyph<span>Forge</span>
     </h1>
 
     <p class="hero-sub">
-        warm ascii text studio
+        Cozy SVG typography crafted with Python & Flask.
     </p>
 
 </section>
 
-<!-- GENERATOR -->
-<section class="generator-shell">
+<section class="generator-panel">
 
-    <div class="generator-box">
+    <div class="gen-input-row">
 
-        <!-- INPUT -->
-        <div class="gen-input-row">
+        <input
+            type="text"
+            id="text-input"
+            placeholder="Type something beautiful..."
+            maxlength="40"
+            oninput="livePreview()"
+        >
 
-            <input
-                type="text"
-                id="text-input"
-                placeholder="TYPE SOMETHING BEAUTIFUL..."
-                maxlength="40"
-                oninput="livePreview()"
-            >
+        <button onclick="livePreview()">
+            Generate
+        </button>
 
-        </div>
+    </div>
 
-        <!-- CONTROLS -->
-        <div class="gen-controls">
+    <div class="gen-controls">
 
-            <select id="font-select" onchange="livePreview()">
+        <select id="font-select" onchange="livePreview()">
 
-                <option value="georgia">Georgia</option>
-                <option value="garamond">Garamond</option>
-                <option value="cursive">Cursive</option>
-                <option value="mono">Monospace</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Garamond">Garamond</option>
+            <option value="Courier New">Courier</option>
+            <option value="Times New Roman">Times</option>
 
-            </select>
+        </select>
 
-            <button onclick="livePreview()">
-                Generate
-            </button>
-
-        </div>
+        <button onclick="downloadSVG()">
+            Download SVG
+        </button>
 
     </div>
 
 </section>
 
-<!-- SVG PREVIEW -->
-<section class="preview-shell">
+<section class="preview-area">
 
     <div id="glyph-preview">
 
-        <div class="preview-placeholder">
-
-            <p>
-                Your generated SVG appears here.
-            </p>
-
-        </div>
+        <p class="preview-placeholder">
+            Your SVG art appears here.
+        </p>
 
     </div>
 
 </section>
 
-<!-- LIVE PREVIEW SCRIPT -->
+<section class="history-section">
+
+    <h2>Recent Glyphs</h2>
+
+    <div class="glyph-history">
+
+        {% for glyph in glyphs[::-1][:5] %}
+
+            <div class="glyph-card">
+
+                {{ glyph.svg | safe }}
+
+                <p>{{ glyph.text }}</p>
+
+                <span>{{ glyph.created }}</span>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
 <script>
 
 async function livePreview() {
@@ -111,25 +106,45 @@ async function livePreview() {
     formData.append("text", text)
     formData.append("font", font)
 
-    try {
+    const response = await fetch("/generate", {
+        method: "POST",
+        body: formData
+    })
 
-        const response = await fetch("/generate", {
-            method: "POST",
-            body: formData
-        })
+    const data = await response.json()
 
-        const data = await response.json()
+    document.getElementById("glyph-preview").innerHTML = data.svg
+}
 
-        document.getElementById("glyph-preview").innerHTML = data.svg
+async function downloadSVG() {
 
-    } catch (error) {
+    const text = document.getElementById("text-input").value
 
-        console.error("SVG generation failed:", error)
+    const font = document.getElementById("font-select").value
 
-    }
+    const formData = new FormData()
+
+    formData.append("text", text)
+    formData.append("font", font)
+
+    const response = await fetch("/download", {
+        method: "POST",
+        body: formData
+    })
+
+    const blob = await response.blob()
+
+    const url = window.URL.createObjectURL(blob)
+
+    const a = document.createElement("a")
+
+    a.href = url
+
+    a.download = "glyphforge.svg"
+
+    a.click()
 }
 
 </script>
 
 {% endblock %}
-```
