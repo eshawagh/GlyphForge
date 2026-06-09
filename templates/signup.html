@@ -1,51 +1,119 @@
 {% extends "base.html" %}
 
-{% block title %}Signup{% endblock %}
+{% block title %}Create Account • GlyphForge{% endblock %}
+
+{% block extra_css %}
+<link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='css/pages/auth.css') }}"
+>
+{% endblock %}
 
 {% block content %}
 
-<section class="auth-page">
+<div class="auth-page">
 
-    <div class="auth-card">
+    <div class="auth-glow"></div>
 
-        <h1>Create Account</h1>
+    <div class="auth-container">
 
-        <p>Join GlyphForge.</p>
+        <!-- LEFT SIDE -->
 
-        <form method="POST">
+        <div class="auth-left">
 
-            <input
-                type="text"
-                name="username"
-                placeholder="Username"
-                required
-            >
+            <div class="ascii-box">
+                <span>GLYPHFORGE / CREATE</span>
+            </div>
 
-            <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                required
-            >
+            <h1 class="hero-logo">
+                Glyph<span>Forge</span>
+            </h1>
 
-            <button type="submit">
-                Create Account
-            </button>
+            <p class="auth-tagline">
+                Build your warm typography workspace.
+            </p>
 
-        </form>
+            <div class="ascii-lines">
+                <span>◆ editorial svg engine</span>
+                <span>◆ cozy typography studio</span>
+                <span>◆ flask powered backend</span>
+            </div>
 
-        {% if error %}
+        </div>
 
-            <p>{{ error }}</p>
+        <!-- RIGHT SIDE -->
 
-        {% endif %}
+        <div class="auth-card">
 
-        <a href="/login">
-            Already have an account?
-        </a>
+            <div class="card-top">
+                <p class="mini-label">
+                    CREATE ACCOUNT
+                </p>
+
+                <h2>
+                    Join the forge
+                </h2>
+            </div>
+
+            {% if error %}
+                <div class="error-box">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+
+                <div class="input-group">
+
+                    <label>
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="enter username"
+                        required
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="enter password"
+                        required
+                    >
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="auth-btn"
+                >
+                    Create Account
+                </button>
+
+            </form>
+
+            <p class="auth-switch">
+                Already have an account?
+
+                <a href="/login">
+                    Sign in
+                </a>
+            </p>
+
+        </div>
 
     </div>
 
-</section>
+</div>
 
 {% endblock %}

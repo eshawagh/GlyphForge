@@ -11,10 +11,8 @@
         {% block title %}GlyphForge{% endblock %}
     </title>
 
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', filename='css/base.css') }}"
-    >
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/base.css') }}">
 
     {% block extra_css %}{% endblock %}
 
@@ -22,23 +20,37 @@
 
 <body>
 
+    <div class="bg-blur"></div>
+
     <nav class="navbar">
 
-        <div class="logo">
-            GlyphForge
-        </div>
+        <a href="/" class="logo">
+            Glyph<span>Forge</span>
+        </a>
 
         <div class="nav-links">
 
-            <a href="/">Home</a>
+            {% if session.get("user") %}
 
-            <a href="/logout">Logout</a>
+                <a href="/">home</a>
+                <a href="/logout">logout</a>
+
+            {% else %}
+
+                <a href="/login">login</a>
+                <a href="/signup">signup</a>
+
+            {% endif %}
 
         </div>
 
     </nav>
 
-    {% block content %}{% endblock %}
+    <main>
+
+        {% block content %}{% endblock %}
+
+    </main>
 
 </body>
 
