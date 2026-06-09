@@ -1,6 +1,6 @@
 # GlyphForge
 
-Warm editorial SVG typography studio built with Flask.
+Editorial SVG typography studio built with Flask.
 
 GlyphForge is a cozy creative web app that generates atmospheric SVG typography with niche editorial aesthetics, soft gradients, and experimental visual styles.
 
